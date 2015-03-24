@@ -1,3 +1,12 @@
+# Old files
+old/
+
+# Development documentation
+doc.md
+
+# Credentials
+cred.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
