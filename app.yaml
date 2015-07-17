@@ -6,7 +6,7 @@ api_version: 1
 
 handlers:
 - url: .*
-  script: api.app
+  script: geospatial.app
 
 libraries:
 - name: pycrypto

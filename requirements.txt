@@ -5,7 +5,9 @@ MarkupSafe==0.23
 Werkzeug==0.10.1
 aniso8601==0.92
 argparse==1.2.1
+geopy==1.10.0
 itsdangerous==0.24
+pycountry==1.10
 pytz==2015.2
 requests==2.6.0
 six==1.9.0
