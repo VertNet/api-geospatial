@@ -8,3 +8,4 @@ api = restful.Api(app)
 
 api.add_resource(Geospatialissue, '/geospatialissue')
 
+from geospatial import views

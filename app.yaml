@@ -5,10 +5,19 @@ threadsafe: true
 api_version: 1
 
 handlers:
+
+- url: /static
+  static_dir: geospatial/static
+  secure: always
+- url: /templates
+  static_dir: templates
+  secure: always
+
 - url: .*
   script: geospatial.app
 
 libraries:
+
 - name: pycrypto
   version: "2.3"
 - name: jinja2

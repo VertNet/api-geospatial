@@ -232,10 +232,10 @@ class Record():
         """Check if original coordinates fall inside specified country."""
         inside = self.pointInCountry(self.decimalLatitude, self.decimalLongitude, self.countryCode)
         self.geoflags['coordinatesInsideCountry'] = inside
-        if inside is True:
-            self.geoflags['negatedLatitude'] = False
-            self.geoflags['negatedLongitude'] = False
-            self.geoflags['transposedCoordinates'] = False
+        # if inside is True:
+        #     self.geoflags['negatedLatitude'] = False
+        #     self.geoflags['negatedLongitude'] = False
+        #     self.geoflags['transposedCoordinates'] = False
         return inside
 
     def negatedLatitudeInsideCountry(self):
@@ -324,9 +324,9 @@ class Record():
         if dist is not None:
             if dist == 0:
                 rangeflags['coordinatesInsideRangeMap'] = True
-                rangeflags['distanceToRangeMap'] = 0
+                rangeflags['distanceToRangeMapInKm'] = 0
             else:
                 rangeflags['coordinatesInsideRangeMap'] = False
-                rangeflags['distanceToRangeMap'] = round(dist/1000, 3)
+                rangeflags['distanceToRangeMapInKm'] = round(dist/1000, 3)
 
         return rangeflags
