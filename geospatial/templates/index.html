@@ -38,7 +38,19 @@
           </div>
           <div id="instructions" class="panel-collapse collapse" role="tabpanel">
             <div class="panel-body">
-            Soon...
+            <p>Welcome to the Geospatial Data Quality API Test page. Here you can test out a service that provides basic quality checking on a set of primary biodiversity records. For more general information on the API, please refer to the <a href="http://www.github.com/jotegui/QualityAPI" target="_blank">GitHub repository for the project</a>.</p>
+            <h4>How to use the API</h4>
+            <p>There are two methods to use the API. You can either send a <b>GET request</b> for assessing a <b>single record</b>, or you can send a <b>POST request</b> to assess a <b>set of one or more records</b>.</p>
+            <h5>GET</h5>
+            <p>The GET tab below allows you to send a GET request for assessing a single record. Just fill in the values you want to check (none of them are mandatory) and hit the "Send!" button. If you leave them all empty, default values will be used. After a couple seconds, the "Response" panel will show the result of the assessment.</p>
+            <h5>POST</h5>
+            <p>The POST tab below allows you to send a POST request, which allows to assess a set of one or more records. You just have to provide a JSON-like document in the text box and hit "Send!". There are some rules to build this document:</p>
+            <ul>
+              <li>It has to be a single document, not an array. That means, everything has to be enclosed in curly braces "{}".</li>
+              <li>The top-level element must be called "records", and it must contain a list with all the records. This list must be enclosed in square brackets "[]".</li>
+              <li>Each element in the list must be a document representing a single record.</li>
+            </ul>
+            <p><a href="/static/example.json" target="_blank">Here is an example</a> of a working document. You can test it out by copying the content of the file in the box below.
             </div>
           </div>
         </div>
