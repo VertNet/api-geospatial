@@ -44,6 +44,7 @@ geospatialControllers.controller('MainController', ['$scope', '$resource', '$q',
                 },
                 function error(errorResponse){
                     q.reject("Error getting GET request:"+JSON.stringify(errorResponse));
+                    $scope.res = errorResponse;
                     $scope.loading = false;
                     $scope.buttonText = "Send!";
                 }
