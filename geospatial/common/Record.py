@@ -1,5 +1,6 @@
 import json
 import logging
+from collections import OrderedDict
 from urllib2 import urlopen
 from urllib import urlencode
 
@@ -15,7 +16,7 @@ class Record():
         self.username = "jotegui"
         self.raw = record
         self.occurrenceId = self.raw['occurrenceId'] if 'occurrenceId' in self.raw else None
-        self.flags = {}
+        self.flags = OrderedDict()
         
         return
 
@@ -53,7 +54,7 @@ class Record():
                     self.geoflags = cached
                 else:
 
-                    self.geoflags = {}
+                    self.geoflags = OrderedDict()
                     # No transformation
                     inside = self.coordinatesInsideCountry()
                     if inside is False:
@@ -151,18 +152,20 @@ class Record():
 
     def validCoordinates(self):
         """Coordinate validation. Returns True if coordinates are numeric and within natural boundaries, False otherwise."""
-        if type(self.decimalLatitude) == type(u"a") or type(self.decimalLongitude) == type(u"a"):
+        # if type(self.decimalLatitude) == type(u"a") or type(self.decimalLongitude) == type(u"a"):
+        #     self.flags['validCoordinates'] = False
+        # else:
+        try:
+            if abs(float(self.decimalLatitude))>90 or abs(float(self.decimalLongitude))>180:
+                self.flags['validCoordinates'] = False
+            else:
+                self.decimalLatitude = float(self.decimalLatitude)
+                self.decimalLongitude = float(self.decimalLongitude)
+                self.flags['validCoordinates'] = True
+        except ValueError:
             self.flags['validCoordinates'] = False
-        else:
-            try:
-                if abs(float(self.decimalLatitude))>90 or abs(float(self.decimalLongitude))>180:
-                    self.flags['validCoordinates'] = False
-                else:
-                    self.flags['validCoordinates'] = True
-            except ValueError:
-                self.flags['validCoordinates'] = False
-            except TypeError:
-                self.flags['validCoordinates'] = False
+        except TypeError:
+            self.flags['validCoordinates'] = False
         return
 
     def validCountry(self):
@@ -248,8 +251,8 @@ class Record():
         """Check if coordinates with negated longitude fall inside specified country."""
         inside = self.pointInCountry(self.decimalLatitude, -1*self.decimalLongitude, self.countryCode)
         if inside is True:
-            self.geoflags['negatedLongitude'] = True
             self.geoflags['negatedLatitude'] = False
+            self.geoflags['negatedLongitude'] = True
             self.geoflags['transposedCoordinates'] = False
         return inside
 
@@ -257,8 +260,8 @@ class Record():
         """Check if coordinates with both values negated fall inside specified country."""
         inside = self.pointInCountry(-1*self.decimalLatitude, -1*self.decimalLongitude, self.countryCode)
         if inside is True:
-            self.geoflags['negatedLongitude'] = True
             self.geoflags['negatedLatitude'] = True
+            self.geoflags['negatedLongitude'] = True
             self.geoflags['transposedCoordinates'] = False
         return inside
 
@@ -266,8 +269,8 @@ class Record():
         """Check if transposed coordinates fall inside specified country."""
         inside = self.pointInCountry(self.decimalLongitude, self.decimalLatitude, self.countryCode)
         if inside is True:
-            self.geoflags['negatedLongitude'] = False
             self.geoflags['negatedLatitude'] = False
+            self.geoflags['negatedLongitude'] = False
             self.geoflags['transposedCoordinates'] = True
         return inside
 
@@ -285,8 +288,8 @@ class Record():
         """Check if transposed coordinates with negated longitude fall inside specified country."""
         inside = self.pointInCountry(self.decimalLongitude, -1*self.decimalLatitude, self.countryCode)
         if inside is True:
-            self.geoflags['negatedLongitude'] = True
             self.geoflags['negatedLatitude'] = False
+            self.geoflags['negatedLongitude'] = True
             self.geoflags['transposedCoordinates'] = True
         return inside
 
@@ -294,15 +297,15 @@ class Record():
         """Check if transposed coordinates with both values negated fall inside specified country."""
         inside = self.pointInCountry(-1*self.decimalLongitude, -1*self.decimalLatitude, self.countryCode)
         if inside is True:
-            self.geoflags['negatedLongitude'] = True
             self.geoflags['negatedLatitude'] = True
+            self.geoflags['negatedLongitude'] = True
             self.geoflags['transposedCoordinates'] = True
         return inside
 
     def distanceToCountry(self):
         """Calculate smallest distance between coordinates and specified country."""
-        self.geoflags['negatedLongitude'] = False
         self.geoflags['negatedLatitude'] = False
+        self.geoflags['negatedLongitude'] = False
         self.geoflags['transposedCoordinates'] = False
         
         country3 = countries.get(alpha2=self.countryCode).alpha3
@@ -316,7 +319,7 @@ class Record():
 
     def pointRangeDistance(self):
         """Check if original coordinates fall inside range map of specified species and calculate distance if not."""
-        rangeflags = {}
+        rangeflags = OrderedDict()
         dist = pointRangeDistanceQuery(self.scientificName, self.decimalLatitude, self.decimalLongitude)
         if dist is not None:
             if dist == 0:
