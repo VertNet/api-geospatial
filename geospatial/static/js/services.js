@@ -10,3 +10,11 @@ geospatialServices.factory ('getRequest', ['$resource',
 		});
 	}
 ]);
+
+geospatialServices.factory ('postRequest', ['$resource',
+	function($resource) {
+		return $resource('http://localhost:8080/geospatialissue', {}, {
+			post: {method: 'POST', isArray: true}
+		});
+	}
+]);
