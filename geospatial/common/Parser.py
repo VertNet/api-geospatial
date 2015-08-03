@@ -11,7 +11,7 @@ from geospatial.common.util import pointRangeDistanceQuery, pointCountryDistance
 
 gn_api = "http://api.geonames.org/"
 
-class Record():
+class Parser():
     def __init__(self, record):
         self.username = "jotegui"
         self.raw = record
@@ -82,7 +82,7 @@ class Record():
                                                     # Nothing works
                                                     self.distanceToCountry()
 
-                    if not memcache.set(memcache_key, self.geoflags):
+                    if not memcache.set(memcache_key, self.geoflags, time=2419200):  # Expire after 1 month
                         logging.error('Memcache set failed for geoflags.')
 
                 for i in self.geoflags:
@@ -105,7 +105,7 @@ class Record():
                     # No transformations, just plain distance
                     self.rangeflags = self.pointRangeDistance()
 
-                    if not memcache.set(memcache_key, self.rangeflags):
+                    if not memcache.set(memcache_key, self.rangeflags, time=2419200):  # Expire after 1 month
                         logging.error('Memcache set failed for rangeflags.')
 
                 for i in self.rangeflags:
