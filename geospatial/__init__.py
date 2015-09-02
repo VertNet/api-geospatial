@@ -7,5 +7,3 @@ app = Flask(__name__)
 api = restful.Api(app)
 
 api.add_resource(Geospatialissue, '/geospatialissue')
-
-from geospatial import views

@@ -1,7 +1,7 @@
 __author__ = '@jotegui'
 
 from flask import render_template
-from geospatial import app
+from explorer import app
 
 @app.route('/')
 def main():

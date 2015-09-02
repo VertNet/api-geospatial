@@ -8,8 +8,9 @@ from collections import OrderedDict
 from datetime import datetime
 import logging
 
-from google.appengine.api import taskqueue
-from google.appengine.api import urlfetch
+#from google.appengine.api import taskqueue
+from google.appengine.api import urlfetch, modules
+import threading
 
 from geospatial.common.Parser import Parser
 
@@ -33,7 +34,6 @@ parser_post.add_argument(
 class Geospatialissue(restful.Resource):
 
     def get(self):
-
         # args = parser_get.parse_args()
         args = request.args
 
@@ -64,19 +64,27 @@ class Geospatialissue(restful.Resource):
             flags[idx] = {}
 
         # Calculate flags for each index
+        # for i in flags.keys():
+        #     record = Parser({
+        #         'decimalLatitude': i[0][0],
+        #         'decimalLongitude': i[0][1],
+        #         'countryCode': i[1],
+        #         'scientificName': i[2]
+        #     })
+        #     flags[i] = record.parse()
+
         for i in flags.keys():
-            record = Parser({
-                'decimalLatitude': i[0][0],
-                'decimalLongitude': i[0][1],
-                'countryCode': i[1],
-                'scientificName': i[2]
-            })
-            flags[i] = record.parse()
+            flags[i] = {}
+            url = 'http://'+modules.get_hostname(version='flask')+'/geospatialissue?'+'decimalLatitude={0}'.format(decimalLatitude)+'decimalLongitude={0}'.format(decimalLongitude)+'countryCode={0}'.format(countryCode)+'scientificName={0}'.format(scientificName)
+            flags[i]['rpc'] = urlfetch.make_fetch_call(urlfetch.create_rpc(), url)
+
+        for i in flags.keys():
+            flags[i]['flags'] = flags[i]['rpc'].get_result()
 
         # Fill in flags in each record
         for i in idxs.keys():
             res = OrderedDict(sorted(records[i].items(), key=lambda t: t[0]))
-            res['flags'] = flags[idxs[i]]
+            res['flags'] = flags[idxs[i]]['flags']
             records[i] = res
 
 

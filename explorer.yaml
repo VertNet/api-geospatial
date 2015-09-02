@@ -1,5 +1,5 @@
 application: jot-mol-qualityapi
-module: api
+module: explorer
 version: main
 runtime: python27
 threadsafe: true
@@ -7,8 +7,13 @@ api_version: 1
 
 handlers:
 
+- url: /static
+  static_dir: explorer/static
+- url: /templates
+  static_dir: templates
+
 - url: .*
-  script: geospatial.app
+  script: explorer.app
 
 libraries:
 
