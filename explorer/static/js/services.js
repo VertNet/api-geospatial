@@ -5,7 +5,7 @@ var geospatialServices = angular.module('geospatialServices', ['ngResource']);
 
 geospatialServices.factory ('getRequest', ['$resource',
 	function($resource) {
-		return $resource('http://flask.jot-mol-qualityapi.appspot.com/geospatialissue?decimalLatitude=:lat&decimalLongitude=:lng&countryCode=:cc&scientificName=:sn', {}, {
+		return $resource('http://'+api_url+'/geospatialissue?decimalLatitude=:lat&decimalLongitude=:lng&countryCode=:cc&scientificName=:sn', {}, {
 			get: {method: 'GET', isArray: false}
 		});
 	}
@@ -13,7 +13,7 @@ geospatialServices.factory ('getRequest', ['$resource',
 
 geospatialServices.factory ('postRequest', ['$resource',
 	function($resource) {
-		return $resource('http://flask.jot-mol-qualityapi.appspot.com/geospatialissue', {}, {
+		return $resource('http://'+api_url+'/geospatialissue', {}, {
 			post: {method: 'POST', isArray: true}
 		});
 	}

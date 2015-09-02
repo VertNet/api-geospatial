@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, make_response
 from flask.ext import restful
 from flask.ext.restful import reqparse, fields, marshal
 
 from collections import OrderedDict
 from datetime import datetime
 import logging
+import json
 
 #from google.appengine.api import taskqueue
 from google.appengine.api import urlfetch, modules
@@ -43,7 +44,9 @@ class Geospatialissue(restful.Resource):
         res = OrderedDict(sorted(args.items(), key=lambda t: t[0]))
         res['flags'] = flags
 
-        return res, 200
+        response = make_response(json.dumps(res))
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        return response
 
     def post(self):
         ini = datetime.now()
