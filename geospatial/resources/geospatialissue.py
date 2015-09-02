@@ -46,6 +46,7 @@ class Geospatialissue(restful.Resource):
 
         response = make_response(json.dumps(res))
         response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Content-Type"] = "application/json"
         return response
 
     def post(self):
@@ -78,7 +79,7 @@ class Geospatialissue(restful.Resource):
 
         for i in flags.keys():
             flags[i] = {}
-            url = 'http://'+modules.get_hostname(version='flask')+'/geospatialissue?'+'decimalLatitude={0}'.format(decimalLatitude)+'decimalLongitude={0}'.format(decimalLongitude)+'countryCode={0}'.format(countryCode)+'scientificName={0}'.format(scientificName)
+            url = 'http://'+modules.get_hostname(module='api')+'/geospatialissue?'+'decimalLatitude={0}'.format(decimalLatitude)+'decimalLongitude={0}'.format(decimalLongitude)+'countryCode={0}'.format(countryCode)+'scientificName={0}'.format(scientificName)
             flags[i]['rpc'] = urlfetch.make_fetch_call(urlfetch.create_rpc(), url)
 
         for i in flags.keys():
@@ -101,5 +102,10 @@ class Geospatialissue(restful.Resource):
         end = datetime.now()
         logging.info("API functions called {0} times".format(len(flags.keys())))
         logging.info("Elapsed: {0}".format(end-ini))
-        return records, 200
+        
+        response = make_response(json.dumps(records))
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Content-Type"] = "application/json"
+        response.headers["Accept"] = "application/json"        
+        return response
 
