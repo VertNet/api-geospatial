@@ -101,7 +101,7 @@ class Geospatialissue(restful.Resource):
 
         for i in flags.keys():
             rpc = urlfetch.create_rpc()
-            values = {
+            params = {
                 'decimalLatitude': i[0][0],
                 'decimalLongitude': i[0][1],
                 'countryCode': i[1],
