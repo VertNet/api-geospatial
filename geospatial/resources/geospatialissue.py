@@ -84,7 +84,14 @@ class Geospatialissue(restful.Resource):
         
         response = make_response(json.dumps(records))
         response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "content-type"
         response.headers["Content-Type"] = "application/json"
-        response.headers["Accept"] = "application/json"        
         return response
 
+    def options(self):
+        """Dummy method to avoid CORS issues when calling from AngularJS."""
+        response = make_response(json.dumps('{}'))
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "content-type"
+        response.headers["Content-Type"] = "application/json"
+        return response
