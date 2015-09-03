@@ -8,8 +8,9 @@ from collections import OrderedDict
 from datetime import datetime
 import logging
 import json
+from urllib import urlencode
 
-from google.appengine.api import taskqueue, modules
+from google.appengine.api import taskqueue, modules, urlfetch
 
 from geospatial.common.Parser import Parser
 from geospatial.resources.singlerecord import SingleRecord
@@ -24,36 +25,56 @@ parser_post.add_argument(
     help="Must provide a list of records"
 )
 
+urlfetch.set_default_fetch_deadline(60)
+
 class Geospatialissue(restful.Resource):
 
-    # Comment if using taskqueue (this method is never called)
-    def parse_record(self, values):
-        record = Parser(values)
-        flags = record.parse()
-        res = OrderedDict(sorted(values.items(), key=lambda t: t[0]))
-        res['flags'] = flags
+    # # Comment if using taskqueue or urlfetch (this method is never called)
+    # def parse_record(self, values):
+    #     record = Parser(values)
+    #     flags = record.parse()
+    #     res = OrderedDict(sorted(values.items(), key=lambda t: t[0]))
+    #     res['flags'] = flags
+    #     return res
+
+    # def handle_result(self, rpc):
+    #     logging.info("called handle_result")
+    #     result = rpc.get_result()
+    #     logging.info(type(result.content))
+    #     return json.loads(result.content)
+
+    # def create_callback(self, rpc):
+    #     logging.info("Called create_callback")
+    #     return lambda: self.handle_result(rpc)
+
+    def handle_record(self, data):
+
         return res
 
-
     def get(self):
+        logging.info("Starting GET request")
         # args = parser_get.parse_args()
         args = request.args
         
-        # Taskqueue
+        # Urlfetch
         params = {
             'decimalLatitude': args['decimalLatitude'] if 'decimalLatitude' in args.keys() else None,
             'decimalLongitude': args['decimalLongitude'] if 'decimalLongitude' in args.keys() else None,
             'countryCode': args['countryCode'] if 'countryCode' in args.keys() else None,
             'scientificName': args['scientificName'] if 'scientificName' in args.keys() else None,
         }
-        task = taskqueue.Task(url="/singlerecord", params=params)
-        record_rpc = taskqueue.create_rpc()
-        result_rpc = task.add_async(queue_name="recordcheck", rpc=record_rpc)
-        res = result_rpc.get_result()
-        # logging.info(res)
+        data = urlencode(params)
 
-        # No Taskqueue
-        # res = self.parse_record(args)
+        rpc = urlfetch.create_rpc()
+        urlfetch.make_fetch_call(
+            rpc,
+            url="http://"+modules.get_hostname(module="api")+"/singlerecord",
+            payload=data,
+            method=urlfetch.POST,
+            headers={"Content-Type":"application/x-www-form-urlencoded"}
+        )
+
+        res = json.loads(rpc.get_result().content)
 
         response = make_response(json.dumps(res))
         response.headers["Access-Control-Allow-Origin"] = "*"
@@ -79,13 +100,25 @@ class Geospatialissue(restful.Resource):
             flags[idx] = {}
 
         for i in flags.keys():
+            rpc = urlfetch.create_rpc()
             values = {
                 'decimalLatitude': i[0][0],
                 'decimalLongitude': i[0][1],
                 'countryCode': i[1],
                 'scientificName': i[2]
             }
-            flags[i]['flags'] = self.parse_record(values)['flags']
+            data = urlencode(params)
+            urlfetch.make_fetch_call(
+                rpc,
+                url="http://"+modules.get_hostname(module="api")+"/singlerecord",
+                payload=data,
+                method=urlfetch.POST,
+                headers={"Content-Type":"application/x-www-form-urlencoded"}
+            )
+            flags[i]['rpc'] = rpc
+
+        for i in flags.keys():
+            flags[i]['flags'] = json.loads(flags[i]['rpc'].get_result().content)['flags']
 
         # Fill in flags in each record
         for i in idxs.keys():
