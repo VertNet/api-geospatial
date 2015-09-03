@@ -9,10 +9,10 @@ from datetime import datetime
 import logging
 import json
 
-#from google.appengine.api import taskqueue
 from google.appengine.api import taskqueue, modules
 
 from geospatial.common.Parser import Parser
+from geospatial.resources.singlerecord import SingleRecord
 
 # Argument parser for the POST method. The 'records' arg is mandatory
 parser_post = reqparse.RequestParser()
@@ -26,6 +26,7 @@ parser_post.add_argument(
 
 class Geospatialissue(restful.Resource):
 
+    # Comment if using taskqueue (this method is never called)
     def parse_record(self, values):
         record = Parser(values)
         flags = record.parse()
@@ -38,7 +39,21 @@ class Geospatialissue(restful.Resource):
         # args = parser_get.parse_args()
         args = request.args
         
-        res = self.parse_record(args)
+        # Taskqueue
+        params = {
+            'decimalLatitude': args['decimalLatitude'] if 'decimalLatitude' in args.keys() else None,
+            'decimalLongitude': args['decimalLongitude'] if 'decimalLongitude' in args.keys() else None,
+            'countryCode': args['countryCode'] if 'countryCode' in args.keys() else None,
+            'scientificName': args['scientificName'] if 'scientificName' in args.keys() else None,
+        }
+        task = taskqueue.Task(url="/singlerecord", params=params)
+        record_rpc = taskqueue.create_rpc()
+        result_rpc = task.add_async(queue_name="recordcheck", rpc=record_rpc)
+        res = result_rpc.get_result()
+        # logging.info(res)
+
+        # No Taskqueue
+        # res = self.parse_record(args)
 
         response = make_response(json.dumps(res))
         response.headers["Access-Control-Allow-Origin"] = "*"
