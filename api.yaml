@@ -1,4 +1,4 @@
-application: jot-mol-qualityapi
+application: vertnet-portal
 module: api
 version: main
 runtime: python27
@@ -7,8 +7,8 @@ api_version: 1
 
 handlers:
 
-- url: .*
-  script: geospatial.app
+- url: /.*
+  script: api.app
 
 libraries:
 

@@ -1,4 +1,0 @@
-total_storage_limit: 500M
-queue:
-- name: recordcheck
-  rate: 35/s
