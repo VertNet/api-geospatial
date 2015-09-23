@@ -1,9 +1,10 @@
 import webapp2
 
-# Add API methods
+# GEOSPATIAL QUALITY
 from geospatial.GeospatialIssue import GeospatialIssue
 from geospatial.SingleRecord import SingleRecord
 
+# ... add more imports here
 
 app = webapp2.WSGIApplication([
     
