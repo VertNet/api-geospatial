@@ -1,5 +1,5 @@
 application: vertnet-portal
-module: api
+module: api-dev
 version: main
 runtime: python27
 threadsafe: true

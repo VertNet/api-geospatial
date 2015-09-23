@@ -4,6 +4,8 @@ from urllib import urlencode
 from google.appengine.api import modules, urlfetch
 import webapp2
 
+MODULE = modules.get_current_module_name()
+
 class GeospatialIssue(webapp2.RequestHandler):
 
     def options(self):
@@ -25,7 +27,7 @@ class GeospatialIssue(webapp2.RequestHandler):
         data = urlencode(params)
 
         rpc = urlfetch.create_rpc()
-        url = "http://"+modules.get_hostname(module="api")+"/geospatial/singlerecord"
+        url = "http://"+modules.get_hostname(module=MODULE)+"/geospatial/singlerecord"
         urlfetch.make_fetch_call(
             rpc,
             url=url,
@@ -75,7 +77,7 @@ class GeospatialIssue(webapp2.RequestHandler):
             data = urlencode(params)
             urlfetch.make_fetch_call(
                 rpc,
-                url="http://"+modules.get_hostname(module="api")+"/geospatial/singlerecord",
+                url="http://"+modules.get_hostname(module=MODULE)+"/geospatial/singlerecord",
                 payload=data,
                 method=urlfetch.POST,
                 headers={"Content-Type":"application/x-www-form-urlencoded"}
