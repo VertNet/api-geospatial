@@ -5,7 +5,9 @@ from urllib import urlencode
 
 from google.appengine.api import memcache
 
-from pycountry import countries
+# from pycountry import countries
+from iso3166 import countries
+
 from geospatial.util import pointRangeDistanceQuery, pointCountryDistanceQuery
 
 gn_api = "http://api.geonames.org/"
@@ -170,7 +172,7 @@ class Parser():
     def validCountry(self):
         """Country validation. Returns True if country code represents an actual country, False otherwise."""
         try:
-            countries.get(alpha2=self.countryCode)
+            countries.get(self.countryCode)
             self.flags['validCountry'] = "True"
         except KeyError:
             self.flags['validCountry'] = "False"
@@ -307,7 +309,7 @@ class Parser():
         self.geoflags['negatedLongitude'] = "False"
         self.geoflags['transposedCoordinates'] = "False"
         
-        country3 = countries.get(alpha2=self.countryCode).alpha3
+        country3 = countries.get(self.countryCode).alpha3
         dist = pointCountryDistanceQuery(country3, self.decimalLatitude, self.decimalLongitude)
         if dist is not None:
             self.geoflags['distanceToCountryInKm'] = round(dist/1000, 3)

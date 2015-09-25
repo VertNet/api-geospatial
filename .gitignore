@@ -6,6 +6,7 @@ cred.py
 *.json
 runserver.py
 *.sublime*
+examples/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -22,7 +23,7 @@ build/
 develop-eggs/
 dist/
 eggs/
-lib/
+#lib/
 lib64/
 parts/
 sdist/

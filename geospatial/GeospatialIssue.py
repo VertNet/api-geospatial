@@ -5,6 +5,7 @@ from google.appengine.api import modules, urlfetch
 import webapp2
 
 MODULE = modules.get_current_module_name()
+URLFETCH_DEADLINE = 60
 
 class GeospatialIssue(webapp2.RequestHandler):
 
@@ -25,6 +26,8 @@ class GeospatialIssue(webapp2.RequestHandler):
         }
 
         data = urlencode(params)
+
+        urlfetch.set_default_fetch_deadline(URLFETCH_DEADLINE)
 
         rpc = urlfetch.create_rpc()
         url = "http://"+modules.get_hostname(module=MODULE)+"/geospatial/singlerecord"
@@ -47,6 +50,8 @@ class GeospatialIssue(webapp2.RequestHandler):
 
     def post(self):
         
+        urlfetch.set_default_fetch_deadline(URLFETCH_DEADLINE)
+
         records = json.loads(self.request.body)
         if type(records) != type([]):
             self.error(400)
