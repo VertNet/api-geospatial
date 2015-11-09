@@ -13,6 +13,9 @@ basic_scaling:
 
 handlers:
 
+- url: /explorer/static
+  static_dir: geospatial/explorer/static
+
 - url: /.*
   script: api.app
 
@@ -24,6 +27,8 @@ libraries:
   version: "2.6"
 - name: markupsafe
   version: "0.15"
+- name: webapp2
+  version: latest
 
 skip_files:
 - ^examples$

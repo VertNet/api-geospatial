@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="geospatialAPI">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geospatial Quality API Example Page</title>
+    
+    <!-- BOOTSTRAP -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="static/css/main.css">
+
+</head>
+<body ng-controller="MainController">
+
+    <!-- Navbar -->
+    <div class="navbar navbar-default navbar-static-top">
+      <span class="navbar-header navbar-brand">
+        Geospatial Data Quality API Test Page
+      </span>
+    </div>
+
+    <!-- Page Content -->
+    <div class="container-fluid">
+ 
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="instructionsHeading">
+            <a role="button" class="" data-toggle="collapse" data-parent="#accordion" href="#instructions" aria-expanded="true" aria-controls="instructions">
+              Instructions
+            </a>
+          </div>
+          <div id="instructions" class="panel-collapse collapse" role="tabpanel">
+            <div class="panel-body">
+            <p>Welcome to the Geospatial Data Quality API Test page. Here you can test out a service that provides basic quality checking on a set of primary biodiversity records. For more general information on the API, please refer to the <a href="http://www.github.com/jotegui/QualityAPI" target="_blank">GitHub repository for the project</a>.</p>
+            <h4>How to use the API</h4>
+            <p>There are two methods to use the API. You can either send a <b>GET request</b> for assessing a <b>single record</b>, or you can send a <b>POST request</b> to assess a <b>set of one or more records</b>.</p>
+            <h5>GET</h5>
+            <p>The GET tab below allows you to send a GET request for assessing a single record. Just fill in the values you want to check (none of them are mandatory) and hit the "Send!" button. If you leave them all empty, default values will be used. After a couple seconds, the "Response" panel will show the result of the assessment.</p>
+            <h5>POST</h5>
+            <p>The POST tab below allows you to send a POST request, which allows to assess a set of one or more records. You just have to provide a JSON-like document in the text box and hit "Send!". There are some rules to build this document:</p>
+            <ul>
+              <li>It has to be a single document, not an array. That means, everything has to be enclosed in curly braces "{}".</li>
+              <li>The top-level element must be called "records", and it must contain a list with all the records. This list must be enclosed in square brackets "[]".</li>
+              <li>Each element in the list must be a document representing a single record.</li>
+            </ul>
+            <p><a href="static/example.json" target="_blank">Here is an example</a> of a working document. You can test it out by copying the content of the file in the box below.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default" id="request">
+            <div class="panel-heading">Request</div>
+            <div class="panel-body">
+ 
+ 
+              <!-- Request tabs -->
+              <ul class="nav nav-pills nav-justified">
+                <li class="active"><a href="#request-get" data-toggle="tab">GET</a></li>
+                <li><a href="#request-post" data-toggle="tab">POST</a></li>
+              </ul>
+ 
+
+              <div class="tab-content">
+                
+
+                <!-- GET tab -->
+                <div class="tab-pane active" id="request-get">
+                  <p class="help-block">Use the GET method to assess a single record. Please fill the appropriate values in the boxes below.</p>
+
+                  <br>
+                  
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-sm-12 col-md-4 control-label" for="decimalLatitude">decimalLatitude</label>
+                      <div class="col-sm-12 col-md-8">
+                        <input ng-model="decimalLatitude" class="form-control " type="text" id="decimalLatitude" placeholder="Latitude, in decimal degrees. E.g. 42.332"></input>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-12 col-md-4 control-label" for="decimalLongitude">decimalLongitude</label>
+                      <div class="col-sm-12 col-md-8">
+                        <input ng-model="decimalLongitude" class="form-control" type="text" id="decimalLongitude" placeholder="Longitude, in decimal degrees. E.g. -1.833"></input>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-12 col-md-4 control-label" for="countryCode">countryCode</label>
+                      <div class="col-sm-12 col-md-8">
+                        <input ng-model="countryCode" class="form-control" type="text" id="countryCode" placeholder="2-character ISO code for the country. E.g. ES"></input>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-12 col-md-4 control-label" for="scientificName">scientificName</label>
+                      <div class="col-sm-12 col-md-8">
+                        <input ng-model="scientificName" class="form-control" type="text" id="scientificName" placeholder="Scientific name, binomial. E.g. Puma concolor"></input>
+                      </div>
+                    </div>
+                  </form>
+  
+                  <button class="btn btn-lg col-xs-12 btn-success" ng-disabled="loading" ng-click="sendGetRequest()">{[{buttonText}]}</button>
+                </div>
+ 
+
+
+                <!-- POST tab -->
+                <div class="tab-pane" id="request-post">
+                  <p class="help-block">Use the POST method to assess one or more records. Please copy the content of a JSON file with the records you want to evaluate in the box below. To learn how to format the input file, please refer to the instructions above.</p><br>
+
+                  <div class="form-group col-xs-12">
+                    <textarea class="form-control col-xs-12" ng-model="postdata" placeholder="Copy the content of your JSON file here..."></textarea>
+                  </div>
+                
+                  <button class="btn btn-lg col-xs-12 btn-success" ng-click="sendPostRequest()">{[{buttonText}]}</button>
+                </div>
+
+
+              </div>
+ 
+            </div>
+          </div>
+        </div>
+        
+
+
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default" id="response">
+            <div class="panel-heading">Response</div>
+            <div class="panel-body">
+
+              <div class="tab-content" >
+                <pre ng-show="res">{[{res | json}]}</pre>
+                <img ng-src="static/img/loading.gif" ng-show="loading"/>
+              </div>
+ 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
+    <script src="https://code.angularjs.org/1.4.3/angular-resource.js"></script>
+    <script src="static/js/app.js"></script>
+    <script src="static/js/controllers.js"></script>
+    <script src="static/js/services.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@ import webapp2
 # GEOSPATIAL QUALITY
 from geospatial.GeospatialIssue import GeospatialIssue
 from geospatial.SingleRecord import SingleRecord
-from geospatial.Explorer import GeospatialExplorerHandler
+from geospatial.explorer.Explorer import GeospatialExplorerHandler
 
 # ... add more imports here
 
