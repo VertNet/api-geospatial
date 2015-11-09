@@ -1,6 +1,7 @@
 import json
 import logging
-from urllib2 import urlopen
+# from urllib2 import urlopen
+from google.appengine.api import urlfetch
 from urllib import urlencode
 
 from google.appengine.api import memcache
@@ -219,9 +220,12 @@ class Parser():
         }
 
         url = gn_api+"countryCode"
+        
         data = urlencode(params)
-        res = urlopen(url, data=data).read()
-        if res.rstrip() == ccode:
+        # res = urlopen(url, data=data).read()
+        res = urlfetch.fetch(url=url, payload=data, method=urlfetch.POST)
+
+        if res.content.rstrip() == ccode:
             return "True"
         else:
             return "False"
@@ -325,7 +329,6 @@ class Parser():
         if dist is not None:
             if dist == 0:
                 rangeflags['coordinatesInsideRangeMap'] = "True"
-                rangeflags['distanceToRangeMapInKm'] = 0
             else:
                 rangeflags['coordinatesInsideRangeMap'] = "False"
                 rangeflags['distanceToRangeMapInKm'] = round(dist/1000, 3)

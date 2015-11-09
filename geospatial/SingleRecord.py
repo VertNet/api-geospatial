@@ -20,4 +20,4 @@ class SingleRecord(webapp2.RequestHandler):
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.headers["Access-Control-Allow-Origin"] = "*"
-        self.response.write(res)
+        self.response.write(flags)
