@@ -219,6 +219,8 @@ class Parser():
             "username": self.username
         }
 
+        ccode = countries.get(self.countryCode).alpha2
+
         url = gn_api+"countryCode"
         
         data = urlencode(params)
