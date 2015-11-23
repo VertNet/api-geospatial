@@ -1,6 +1,5 @@
 application: vertnet-portal
-module: quality-api
-version: main
+module: api-geospatial
 runtime: python27
 threadsafe: true
 api_version: 1
