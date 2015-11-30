@@ -9,11 +9,7 @@ Author: Javier Otegui
 
 The current base URL for the API is:
 
-	http://api-dev.vertnet-portal.appspot.com/geospatial
-
-although it will surely change in the future.
-
-This URL holds the current (development) version of the API.
+	http://api-geospatial.vertnet-portal.appspot.com/geospatial
 
 Given that it is designed to be an open service to the community, no credentials whatsoever are required. But we reserve the right to close it at any moment if we suspect there is being misuse.
 
@@ -59,7 +55,7 @@ The output of the API will always be a JSON document, whether it is a single-rec
 curl -H "Content-Type: application/json" "http://api-dev.vertnet-portal.appspot.com/geospatial?decimalLatitude=42.332&decimalLongitude=-1.833&countryCode=ES&scientificName=Puma%20concolor"
 ```
 
-When using the API in this way, the result is the provided set of values plus the `flags` element, but everything apart from the aforementioned four DarwinCore elements will be ignored. Here is the output of the previous example:
+When using the API in this way, the result is the provided set of values plus the `flags` element, but everything apart from the aforementioned four DarwinCore elements will be ignored, and if any of these four elements is missing, it will appear as an empty string. Here is the output of the previous example:
 
 ```json
 {
