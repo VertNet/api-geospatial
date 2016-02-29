@@ -30,16 +30,6 @@ class GeospatialIssue(webapp2.RequestHandler):
             'scientificName': self.request.get('scientificName')
         }
 
-        # Try to cast coords to floats, keep strings if error
-        try:
-            params['decimalLatitude'] = round(float(params['decimalLatitude']), len(params['decimalLatitude'].split(".")[1]))
-        except ValueError:
-            pass
-        try:
-            params['decimalLongitude'] = round(float(params['decimalLongitude']), len(params['decimalLongitude'].split(".")[1]))
-        except ValueError:
-            pass
-
         data = urlencode(params)
 
         urlfetch.set_default_fetch_deadline(URLFETCH_DEADLINE)
@@ -94,16 +84,6 @@ class GeospatialIssue(webapp2.RequestHandler):
             decimalLongitude = records[i]['decimalLongitude'] if 'decimalLongitude' in records[i].keys() else None
             countryCode = records[i]['countryCode'] if 'countryCode' in records[i].keys() else None
             scientificName = records[i]['scientificName'] if 'scientificName' in records[i].keys() else None
-
-            # Try to cast coords to floats, keep strings if error
-            try:
-                decimalLatitude = round(float(decimalLatitude), len(decimalLatitude.split(".")[1]))
-            except ValueError:
-                pass
-            try:
-                decimalLongitude = round(float(decimalLongitude), len(decimalLongitude.split(".")[1]))
-            except ValueError:
-                pass
             
             # Build "ID" by tupling values
             idx = ((decimalLatitude, decimalLongitude), countryCode, scientificName)
