@@ -32,11 +32,11 @@ class GeospatialIssue(webapp2.RequestHandler):
 
         # Try to cast coords to floats, keep strings if error
         try:
-            params['decimalLatitude'] = float(params['decimalLatitude'])
+            params['decimalLatitude'] = round(float(params['decimalLatitude']), len(params['decimalLatitude'].split(".")[1]))
         except ValueError:
             pass
         try:
-            params['decimalLongitude'] = float(params['decimalLongitude'])
+            params['decimalLongitude'] = round(float(params['decimalLongitude']), len(params['decimalLongitude'].split(".")[1]))
         except ValueError:
             pass
 
@@ -97,11 +97,11 @@ class GeospatialIssue(webapp2.RequestHandler):
 
             # Try to cast coords to floats, keep strings if error
             try:
-                decimalLatitude = float(decimalLatitude)
+                decimalLatitude = round(float(decimalLatitude), len(decimalLatitude.split(".")[1]))
             except ValueError:
                 pass
             try:
-                decimalLongitude = float(decimalLongitude)
+                decimalLongitude = round(float(decimalLongitude), len(decimalLongitude.split(".")[1]))
             except ValueError:
                 pass
             
