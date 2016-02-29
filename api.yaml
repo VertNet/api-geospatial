@@ -1,5 +1,5 @@
 application: vertnet-portal
-module: api-geospatial
+module: api-dev
 runtime: python27
 threadsafe: true
 api_version: 1

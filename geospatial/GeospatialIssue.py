@@ -34,7 +34,7 @@ class GeospatialIssue(webapp2.RequestHandler):
 
         urlfetch.set_default_fetch_deadline(URLFETCH_DEADLINE)
 
-        url = "http://"+modules.get_hostname(module=MODULE)+"/geospatial/singlerecord"
+        url = "http://api-geospatial.vertnet-portal.appspot.com/geospatial/singlerecord"
         result = urlfetch.fetch(
             url=url,
             payload=data,
@@ -124,7 +124,7 @@ class GeospatialIssue(webapp2.RequestHandler):
                 # Launch the async call to singlerecord
                 urlfetch.make_fetch_call(
                     rpc,
-                    url="http://"+modules.get_hostname(module=MODULE)+"/geospatial/singlerecord",
+                    url="http://api-geospatial.vertnet-portal.appspot.com/geospatial/singlerecord",
                     payload=data,
                     method=urlfetch.POST,
                     headers={"Content-Type":"application/x-www-form-urlencoded"}
