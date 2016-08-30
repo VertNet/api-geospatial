@@ -16,7 +16,6 @@ class ErrorHandler(webapp2.RequestHandler):
             "message": msg
         }
 
-        self.error(503)
         self.response.write(json.dumps(resp)+"\n")
 
 error_handler = webapp2.WSGIApplication([('/.*', ErrorHandler)], debug=True)
