@@ -1,4 +1,4 @@
-import json
+# import json
 import logging
 # from urllib2 import urlopen
 from google.appengine.api import urlfetch
@@ -13,17 +13,18 @@ from geospatial.util import pointRangeDistanceQuery, pointCountryDistanceQuery
 
 gn_api = "http://api.geonames.org/"
 
+
 class Parser():
     def __init__(self, record):
         self.username = "jotegui"
         self.raw = record
         self.occurrenceId = self.raw['occurrenceId'] if 'occurrenceId' in self.raw else None
         self.flags = {}
-        
+
         return
 
     def parse(self):
-        
+
         # Completeness
         self.hasCoordinates()
         self.hasCountry()
@@ -38,7 +39,7 @@ class Parser():
 
         if self.flags['hasScientificName'] == True:
             self.validScientificName()
-        
+
         # Common errors
         if 'validCoordinates' in self.flags and self.flags['validCoordinates'] == True:
             self.nonZeroCoordinates()
@@ -113,10 +114,7 @@ class Parser():
                 for i in self.rangeflags:
                     self.flags[i] = self.rangeflags[i]
 
-
         return self.flags
-
-    
 
     # COMPLETENESS
 
@@ -148,8 +146,6 @@ class Parser():
             self.flags['hasScientificName'] = False
         return
 
-    
-
     # VALIDITY
 
     def validCoordinates(self):
@@ -179,18 +175,15 @@ class Parser():
             self.flags['validCountry'] = False
         return
 
-
     def validScientificName(self):
         # TODO
         return
-
-    
 
     # COMMON ISSUES
 
     def nonZeroCoordinates(self):
         """Check if both coordinates are 0."""
-        if self.decimalLatitude==0 and self.decimalLongitude==0:
+        if self.decimalLatitude == 0 and self.decimalLongitude == 0:
             self.flags['nonZeroCoordinates'] = False
         else:
             self.flags['nonZeroCoordinates'] = True
@@ -200,13 +193,11 @@ class Parser():
         """Check if coordinates have two or less decimal figures."""
         latlen = len(str(float(self.decimalLatitude)).split('.')[1])
         lnglen = len(str(float(self.decimalLongitude)).split('.')[1])
-        if latlen<=2 or lnglen<=2:
+        if latlen <= 2 or lnglen <= 2:
             self.flags['highPrecisionCoordinates'] = False
         else:
             self.flags['highPrecisionCoordinates'] = True
         return
-
-
 
     # BASE POINT-IN-COUNTRY AND POINT-IN-RANGE CHECKS
 
@@ -222,7 +213,7 @@ class Parser():
         ccode = countries.get(self.countryCode).alpha2
 
         url = gn_api+"countryCode"
-        
+
         data = urlencode(params)
         # res = urlopen(url, data=data).read()
         res = urlfetch.fetch(url=url, payload=data, method=urlfetch.POST)
@@ -231,7 +222,6 @@ class Parser():
             return True
         else:
             return False
-
 
     # GEOSPATIAL ASSESSMENTS
 
@@ -281,11 +271,10 @@ class Parser():
             self.geoflags['transposedCoordinates'] = True
         return inside
 
-    
     def tNegatedLatitudeInsideCountry(self):
         """Check if transposed coordinates with negated latitude fall inside specified country."""
         inside = self.pointInCountry(-1*self.decimalLongitude, self.decimalLatitude, self.countryCode)
-        if inside == True:
+        if inside is True:
             self.geoflags['negatedLatitude'] = True
             self.geoflags['negatedLongitude'] = False
             self.geoflags['transposedCoordinates'] = True
@@ -294,7 +283,7 @@ class Parser():
     def tNegatedLongitudeInsideCountry(self):
         """Check if transposed coordinates with negated longitude fall inside specified country."""
         inside = self.pointInCountry(self.decimalLongitude, -1*self.decimalLatitude, self.countryCode)
-        if inside == True:
+        if inside is True:
             self.geoflags['negatedLatitude'] = False
             self.geoflags['negatedLongitude'] = True
             self.geoflags['transposedCoordinates'] = True
@@ -314,13 +303,12 @@ class Parser():
         self.geoflags['negatedLatitude'] = False
         self.geoflags['negatedLongitude'] = False
         self.geoflags['transposedCoordinates'] = False
-        
+
         country3 = countries.get(self.countryCode).alpha3
         dist = pointCountryDistanceQuery(country3, self.decimalLatitude, self.decimalLongitude)
         if dist is not None:
             self.geoflags['distanceToCountryInKm'] = round(dist/1000, 3)
         return
-
 
     # SPATIO-TAXONOMIC ASSESSMENTS
 
