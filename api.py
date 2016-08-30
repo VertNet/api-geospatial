@@ -8,11 +8,11 @@ from geospatial.explorer.Explorer import GeospatialExplorerHandler
 # ... add more imports here
 
 app = webapp2.WSGIApplication([
-    
+
     # GEOSPATIAL QUALITY
     ('/geospatial', GeospatialIssue),
     ('/geospatial/singlerecord', SingleRecord),
     ('/explorer/geospatial', GeospatialExplorerHandler)
-    
+
     # ... add more routes here
 ], debug=True)

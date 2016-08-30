@@ -1,5 +1,5 @@
 #application: vertnet-portal
-module: api-geospatial
+service: api-geospatial
 runtime: python27
 threadsafe: true
 api_version: 1
@@ -12,11 +12,17 @@ basic_scaling:
 
 handlers:
 
-- url: /explorer/static
-  static_dir: geospatial/explorer/static
+# # UI
+# - url: /explorer/static
+#   static_dir: geospatial/explorer/static
 
+# # Main app
+# - url: /.*
+#   script: api.app
+
+# Error handler
 - url: /.*
-  script: api.app
+  script: error.error_handler
 
 libraries:
 
