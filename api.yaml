@@ -1,4 +1,21 @@
-#application: vertnet-portal
+# CODEBASE INFO
+# Last pushed to master branch: 2016-10-31
+# Last change to master branch: Revert to normal functioning
+# Last pushed to dev branch: ?
+# Last change to dev branch: ?
+#
+# DEPLOYMENT INFO
+# Last deployed dev version: ?
+# Last deployed prod version: 2016-10-31
+# command: gcloud app deploy api.yaml
+# args:
+#   --project vertnet-portal  # Optional, no need if gcloud is configured to use this project
+#   --version prod|dev  # Indicates version to use. If 'Prod', --promote flag should be used
+#   --promote  # Optional, removes the version id from the deployment URL. Skip for testing and/or dev version
+#
+# TODO
+#   * Docs
+
 service: api-geospatial
 runtime: python27
 threadsafe: true
@@ -20,7 +37,7 @@ handlers:
 - url: /.*
   script: api.app
 
-# Error handler
+# # Error handler - uncomment for shutting the API down
 #- url: /.*
 #  script: error.error_handler
 
