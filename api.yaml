@@ -16,13 +16,13 @@ handlers:
 # - url: /explorer/static
 #   static_dir: geospatial/explorer/static
 
-# # Main app
-# - url: /.*
-#   script: api.app
+# Main app
+- url: /.*
+  script: api.app
 
 # Error handler
-- url: /.*
-  script: error.error_handler
+#- url: /.*
+#  script: error.error_handler
 
 libraries:
 
